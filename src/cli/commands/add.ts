@@ -6,129 +6,130 @@ import { getSukConfig } from '../utils/config.js';
 import { installComponent } from '../utils/installer.js';
 
 interface AddOptions {
-  all?: boolean;
-  force?: boolean;
-  dryRun?: boolean;
+	all?: boolean;
+	force?: boolean;
+	dryRun?: boolean;
 }
 
 export async function addCommand(components: string[], options: AddOptions) {
-  const spinner = ora();
-  
-  try {
-    // Check if SUK is initialized
-    const config = await getSukConfig();
-    if (!config) {
-      console.log(chalk.red('❌ SUK is not initialized in this project.'));
-      console.log(chalk.gray('Run `suk init` first to set up SUK.'));
-      return;
-    }
+	const spinner = ora();
 
-    // Load registry
-    spinner.start('Loading component registry...');
-    const registry = await getRegistry();
-    spinner.succeed('Registry loaded');
+	try {
+		// Check if SUK is initialized
+		const config = await getSukConfig();
+		if (!config) {
+			console.log(chalk.red('❌ SUK is not initialized in this project.'));
+			console.log(chalk.gray('Run `suk init` first to set up SUK.'));
+			return;
+		}
 
-    if (!registry) {
-      console.log(chalk.red('❌ Could not load component registry.'));
-      return;
-    }
+		// Load registry
+		spinner.start('Loading component registry...');
+		const registry = await getRegistry();
+		spinner.succeed('Registry loaded');
 
-    let componentsToAdd: string[] = [];
+		if (!registry) {
+			console.log(chalk.red('❌ Could not load component registry.'));
+			return;
+		}
 
-    // Handle --all flag
-    if (options.all) {
-      componentsToAdd = Object.keys(registry);
-      
-      if (!options.force) {
-        const { confirm } = await prompts({
-          type: 'confirm',
-          name: 'confirm',
-          message: `Add all ${componentsToAdd.length} components?`,
-          initial: false
-        });
-        
-        if (!confirm) {
-          console.log(chalk.yellow('Operation cancelled.'));
-          return;
-        }
-      }
-    } else if (components.length === 0) {
-      // Interactive component selection
-      const choices = Object.entries(registry).map(([name, component]: [string, any]) => ({
-        title: name,
-        description: component.description,
-        value: name
-      }));
+		let componentsToAdd: string[] = [];
 
-      const { selected } = await prompts({
-        type: 'multiselect',
-        name: 'selected',
-        message: 'Select components to add:',
-        choices,
-        min: 1
-      });
+		// Handle --all flag
+		if (options.all) {
+			componentsToAdd = Object.keys(registry);
 
-      if (!selected || selected.length === 0) {
-        console.log(chalk.yellow('No components selected.'));
-        return;
-      }
+			if (!options.force) {
+				const { confirm } = await prompts({
+					type: 'confirm',
+					name: 'confirm',
+					message: `Add all ${componentsToAdd.length} components?`,
+					initial: false
+				});
 
-      componentsToAdd = selected;
-    } else {
-      componentsToAdd = components;
-    }
+				if (!confirm) {
+					console.log(chalk.yellow('Operation cancelled.'));
+					return;
+				}
+			}
+		} else if (components.length === 0) {
+			// Interactive component selection
+			const choices = Object.entries(registry).map(([name, component]: [string, any]) => ({
+				title: name,
+				description: component.description,
+				value: name
+			}));
 
-    // Validate components exist
-    const invalidComponents = componentsToAdd.filter(name => !registry[name]);
-    if (invalidComponents.length > 0) {
-      console.log(chalk.red(`❌ Unknown components: ${invalidComponents.join(', ')}`));
-      console.log(chalk.gray('Run `suk list` to see available components.'));
-      return;
-    }
+			const { selected } = await prompts({
+				type: 'multiselect',
+				name: 'selected',
+				message: 'Select components to add:',
+				choices,
+				min: 1
+			});
 
-    // Dry run
-    if (options.dryRun) {
-      console.log(chalk.blue('🔍 Dry run - would add the following components:\n'));
-      componentsToAdd.forEach(name => {
-        const component = registry[name];
-        console.log(`  ${chalk.green('+')} ${chalk.white(name)} - ${chalk.gray(component.description)}`);
-        if (component.dependencies?.length) {
-          console.log(`    ${chalk.blue('Dependencies:')} ${component.dependencies.join(', ')}`);
-        }
-      });
-      return;
-    }
+			if (!selected || selected.length === 0) {
+				console.log(chalk.yellow('No components selected.'));
+				return;
+			}
 
-    // Install components
-    console.log(chalk.blue(`🚀 Adding ${componentsToAdd.length} component(s)...\n`));
+			componentsToAdd = selected;
+		} else {
+			componentsToAdd = components;
+		}
 
-    for (const componentName of componentsToAdd) {
-      const component = registry[componentName];
-      
-      spinner.start(`Installing ${componentName}...`);
-      
-      try {
-        await installComponent(componentName, component, config, options.force);
-        spinner.succeed(`${componentName} installed`);
-      } catch (error) {
-        spinner.fail(`Failed to install ${componentName}`);
-        if (error instanceof Error) {
-          console.error(chalk.red(`  Error: ${error.message}`));
-        }
-      }
-    }
+		// Validate components exist
+		const invalidComponents = componentsToAdd.filter((name) => !registry[name]);
+		if (invalidComponents.length > 0) {
+			console.log(chalk.red(`❌ Unknown components: ${invalidComponents.join(', ')}`));
+			console.log(chalk.gray('Run `suk list` to see available components.'));
+			return;
+		}
 
-    // Success message
-    console.log(chalk.green('\n✅ Components added successfully!\n'));
-    console.log(chalk.blue('Next steps:'));
-    console.log(chalk.gray('  Import components in your Svelte files:'));
-    console.log(chalk.white(`  import { Button } from '$lib/components/ui';`));
+		// Dry run
+		if (options.dryRun) {
+			console.log(chalk.blue('🔍 Dry run - would add the following components:\n'));
+			componentsToAdd.forEach((name) => {
+				const component = registry[name];
+				console.log(
+					`  ${chalk.green('+')} ${chalk.white(name)} - ${chalk.gray(component.description)}`
+				);
+				if (component.dependencies?.length) {
+					console.log(`    ${chalk.blue('Dependencies:')} ${component.dependencies.join(', ')}`);
+				}
+			});
+			return;
+		}
 
-  } catch (error) {
-    spinner.fail('Failed to add components');
-    if (error instanceof Error) {
-      console.error(chalk.red('Error:'), error.message);
-    }
-    process.exit(1);
-  }
+		// Install components
+		console.log(chalk.blue(`🚀 Adding ${componentsToAdd.length} component(s)...\n`));
+
+		for (const componentName of componentsToAdd) {
+			const component = registry[componentName];
+
+			spinner.start(`Installing ${componentName}...`);
+
+			try {
+				await installComponent(componentName, component, config, options.force);
+				spinner.succeed(`${componentName} installed`);
+			} catch (error) {
+				spinner.fail(`Failed to install ${componentName}`);
+				if (error instanceof Error) {
+					console.error(chalk.red(`  Error: ${error.message}`));
+				}
+			}
+		}
+
+		// Success message
+		console.log(chalk.green('\n✅ Components added successfully!\n'));
+		console.log(chalk.blue('Next steps:'));
+		console.log(chalk.gray('  Import components in your Svelte files:'));
+		console.log(chalk.white(`  import { Button } from '$lib/components/ui';`));
+	} catch (error) {
+		spinner.fail('Failed to add components');
+		if (error instanceof Error) {
+			console.error(chalk.red('Error:'), error.message);
+		}
+		process.exit(1);
+	}
 }

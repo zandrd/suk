@@ -8,92 +8,88 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export async function installComponent(
-  name: string,
-  component: ComponentInfo,
-  config: SukConfig,
-  force: boolean = false
+	name: string,
+	component: ComponentInfo,
+	config: SukConfig,
+	force: boolean = false
 ): Promise<void> {
-  for (const file of component.files) {
-    await installFile(name, file, config, force);
-  }
+	for (const file of component.files) {
+		await installFile(name, file, config, force);
+	}
 }
 
 async function installFile(
-  componentName: string,
-  file: ComponentFile,
-  config: SukConfig,
-  force: boolean
+	componentName: string,
+	file: ComponentFile,
+	config: SukConfig,
+	force: boolean
 ): Promise<void> {
-  // Determine target directory based on file type
-  let targetDir: string;
-  switch (file.type) {
-    case 'component':
-      targetDir = config.aliases.components;
-      break;
-    case 'types':
-      targetDir = config.aliases.types;
-      break;
-    case 'utils':
-      targetDir = config.aliases.utils;
-      break;
-    default:
-      targetDir = config.aliases.components;
-  }
+	// Determine target directory based on file type
+	let targetDir: string;
+	switch (file.type) {
+		case 'component':
+			targetDir = config.aliases.components;
+			break;
+		case 'types':
+			targetDir = config.aliases.types;
+			break;
+		case 'utils':
+			targetDir = config.aliases.utils;
+			break;
+		default:
+			targetDir = config.aliases.components;
+	}
 
-  // Ensure target directory exists
-  mkdirSync(targetDir, { recursive: true });
+	// Ensure target directory exists
+	mkdirSync(targetDir, { recursive: true });
 
-  // Target file path
-  const targetPath = join(targetDir, file.path);
+	// Target file path
+	const targetPath = join(targetDir, file.path);
 
-  // Check if file already exists
-  if (existsSync(targetPath) && !force) {
-    throw new Error(`File ${file.path} already exists. Use --force to overwrite.`);
-  }
+	// Check if file already exists
+	if (existsSync(targetPath) && !force) {
+		throw new Error(`File ${file.path} already exists. Use --force to overwrite.`);
+	}
 
-  // Load template
-  const templateContent = await loadTemplate(file.template);
-  
-  // Process template (replace placeholders, etc.)
-  const processedContent = processTemplate(templateContent, componentName, config);
+	// Load template
+	const templateContent = await loadTemplate(file.template);
 
-  // Write file
-  const targetFileDir = dirname(targetPath);
-  mkdirSync(targetFileDir, { recursive: true });
-  writeFileSync(targetPath, processedContent);
+	// Process template (replace placeholders, etc.)
+	const processedContent = processTemplate(templateContent, componentName, config);
+
+	// Write file
+	const targetFileDir = dirname(targetPath);
+	mkdirSync(targetFileDir, { recursive: true });
+	writeFileSync(targetPath, processedContent);
 }
 
 async function loadTemplate(templateName: string): Promise<string> {
-  const templatePath = join(__dirname, '../../../registry/templates/svelte', templateName);
-  
-  if (!existsSync(templatePath)) {
-    // Fallback: create mock template
-    return getMockTemplate(templateName);
-  }
+	const templatePath = join(__dirname, '../../../registry/templates/svelte', templateName);
 
-  return readFileSync(templatePath, 'utf-8');
+	if (!existsSync(templatePath)) {
+		// Fallback: create mock template
+		return getMockTemplate(templateName);
+	}
+
+	return readFileSync(templatePath, 'utf-8');
 }
 
-function processTemplate(
-  content: string,
-  componentName: string,
-  config: SukConfig
-): string {
-  // Replace template variables
-  return content
-    .replace(/{{componentName}}/g, componentName)
-    .replace(/{{ComponentName}}/g, capitalize(componentName))
-    .replace(/{{typescript}}/g, config.tsx ? 'true' : 'false')
-    .replace(/{{cssVariables}}/g, config.tailwind.cssVariables ? 'true' : 'false');
+function processTemplate(content: string, componentName: string, config: SukConfig): string {
+	// Replace template variables
+	return content
+		.replace(/{{componentName}}/g, componentName)
+		.replace(/{{ComponentName}}/g, capitalize(componentName))
+		.replace(/{{typescript}}/g, config.tsx ? 'true' : 'false')
+		.replace(/{{cssVariables}}/g, config.tailwind.cssVariables ? 'true' : 'false');
 }
 
 function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function getMockTemplate(templateName: string): string {
-  const templates: Record<string, string> = {
-    'button.svelte': `<script lang="ts">
+	const templates: Record<string, string> = {
+		'button.svelte': `<script lang="ts">
   import type { Snippet } from 'svelte';
   
   interface Props {
@@ -144,14 +140,14 @@ function getMockTemplate(templateName: string): string {
   {@render children()}
 </button>`,
 
-    'button-types.ts': `export interface ButtonProps {
+		'button-types.ts': `export interface ButtonProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   disabled?: boolean;
   class?: string;
 }`,
 
-    'container.svelte': `<script lang="ts">
+		'container.svelte': `<script lang="ts">
   import type { Snippet } from 'svelte';
   
   interface Props {
@@ -187,11 +183,11 @@ function getMockTemplate(templateName: string): string {
   {@render children()}
 </div>`,
 
-    'container-types.ts': `export interface ContainerProps {
+		'container-types.ts': `export interface ContainerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full';
   class?: string;
 }`
-  };
+	};
 
-  return templates[templateName] || '// Template not found';
+	return templates[templateName] || '// Template not found';
 }
