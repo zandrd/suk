@@ -1,17 +1,17 @@
 {
 	"name": "@zandrd/suk",
-	"version": "0.1.0",
-	"description": "SUK - The Svelte UI Kit that doesn't suck",
+	"version": "0.1.1",
+	"description": "The Svelte UI Kit that doesn't suck. CLI-based component distribution for Svelte 5 with perfect tree-shaking and zero bundle overhead.",
 	"author": "Andrés Mardones",
 	"license": "MIT",
 	"bin": {
-		"suk": "./dist/cli.js"
+		"suk": "./dist/index.js"
 	},
 	"scripts": {
 		"dev": "vite dev",
 		"dev:cli": "tsx src/cli/index.ts",
 		"build": "npm run build:cli && npm run build:site",
-		"build:cli": "tsup src/cli/index.ts --format cjs,esm --dts --out-dir dist",
+		"build:cli": "tsup src/cli/index.ts --format esm --dts --out-dir dist",
 		"build:site": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -79,7 +79,14 @@
 		"cli",
 		"design-system",
 		"typescript",
-		"tailwindcss"
+		"tailwindcss",
+		"copy-paste",
+		"tree-shaking",
+		"bundle-optimization",
+		"component-library",
+		"sveltekit",
+		"runes",
+		"pnpm"
 	],
 	"pnpm": {
 		"onlyBuiltDependencies": [
