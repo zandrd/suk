@@ -1,0 +1,217 @@
+{
+  "button": {
+    "name": "button",
+    "description": "Interactive button with variants, sizes, and icon support",
+    "category": "form",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "button.svelte",
+        "template": "button.svelte",
+        "type": "component"
+      },
+      {
+        "path": "button.ts",
+        "template": "types/button.ts",
+        "type": "types"
+      }
+    ],
+    "size": "3.2kB",
+    "exports": ["Button", "ButtonProps"]
+  },
+  "card": {
+    "name": "card",
+    "description": "Flexible content container with header, body, and footer sections",
+    "category": "display",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "card.svelte",
+        "template": "card.svelte",
+        "type": "component"
+      },
+      {
+        "path": "card.ts",
+        "template": "types/card.ts",
+        "type": "types"
+      }
+    ],
+    "size": "2.8kB",
+    "exports": ["Card", "CardHeader", "CardContent", "CardFooter", "CardProps"]
+  },
+  "input": {
+    "name": "input",
+    "description": "Form input field with variants, validation states, and icons",
+    "category": "form",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "input.svelte",
+        "template": "input.svelte",
+        "type": "component"
+      },
+      {
+        "path": "input.ts",
+        "template": "input-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "4.1kB",
+    "exports": ["Input", "InputProps"]
+  },
+  "badge": {
+    "name": "badge",
+    "description": "Small status indicator with color variants and sizes",
+    "category": "display",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "badge.svelte",
+        "template": "badge.svelte",
+        "type": "component"
+      },
+      {
+        "path": "badge.ts",
+        "template": "badge-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "1.9kB",
+    "exports": ["Badge", "BadgeProps"]
+  },
+  "dialog": {
+    "name": "dialog",
+    "description": "Modal dialog with backdrop, animations, and accessibility features",
+    "category": "overlay",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "dialog.svelte",
+        "template": "dialog.svelte",
+        "type": "component"
+      },
+      {
+        "path": "dialog.ts",
+        "template": "dialog-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "5.7kB",
+    "exports": ["Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogProps"]
+  },
+  "container": {
+    "name": "container",
+    "description": "Responsive container with max-width constraints and padding",
+    "category": "layout",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "container.svelte",
+        "template": "container.svelte",
+        "type": "component"
+      },
+      {
+        "path": "container.ts",
+        "template": "container-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "1.8kB",
+    "exports": ["Container", "ContainerProps"]
+  },
+  "grid": {
+    "name": "grid",
+    "description": "CSS Grid layout with responsive columns and gap control",
+    "category": "layout",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "grid.svelte",
+        "template": "grid.svelte",
+        "type": "component"
+      },
+      {
+        "path": "grid.ts",
+        "template": "grid-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "2.1kB",
+    "exports": ["Grid", "GridProps"]
+  },
+  "flex": {
+    "name": "flex",
+    "description": "Flexbox layout with direction, alignment, and gap control",
+    "category": "layout",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "flex.svelte",
+        "template": "flex.svelte",
+        "type": "component"
+      },
+      {
+        "path": "flex.ts",
+        "template": "flex-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "2.3kB",
+    "exports": ["Flex", "FlexProps"]
+  },
+  "spinner": {
+    "name": "spinner",
+    "description": "Loading indicator with size and color variants",
+    "category": "feedback",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "spinner.svelte",
+        "template": "spinner.svelte",
+        "type": "component"
+      },
+      {
+        "path": "spinner.ts",
+        "template": "spinner-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "1.5kB",
+    "exports": ["Spinner", "SpinnerProps"]
+  },
+  "toast": {
+    "name": "toast",
+    "description": "Notification toast with variants, actions, and auto-dismiss",
+    "category": "feedback",
+    "dependencies": [],
+    "devDependencies": [],
+    "files": [
+      {
+        "path": "toast.svelte",
+        "template": "toast.svelte",
+        "type": "component"
+      },
+      {
+        "path": "toast-store.ts",
+        "template": "toast-store.ts",
+        "type": "utils"
+      },
+      {
+        "path": "toast.ts",
+        "template": "toast-types.ts",
+        "type": "types"
+      }
+    ],
+    "size": "6.3kB",
+    "exports": ["Toast", "ToastStore", "toast", "ToastProps"]
+  }
+}
