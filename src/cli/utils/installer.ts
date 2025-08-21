@@ -64,7 +64,8 @@ async function installFile(
 }
 
 async function loadTemplate(templateName: string): Promise<string> {
-	const templatePath = join(__dirname, '../../../registry/templates/svelte', templateName);
+	// Handle nested paths like 'types/badge.ts'
+	const templatePath = join(__dirname, '../../../registry', templateName);
 
 	if (!existsSync(templatePath)) {
 		// Fallback: create mock template
